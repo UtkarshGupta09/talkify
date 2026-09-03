@@ -1,9 +1,8 @@
 import e from "express";
+import { signup } from "../controller/auth.controller.js";
 const router = e.Router();
 
-router.get("/signup", (req, res) => {
-  res.send("Signup endpoint");
-});
+router.post("/signup", signup);
 router.get("/login", (req, res) => {
   res.send("Login endpoint");
 });
