@@ -2,7 +2,7 @@ import e from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
-import { connectDB } from "../lib/db.js";
+import { connectDB } from "./lib/db.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -22,18 +22,23 @@ app.use("/api/messages", messageRoutes);
 
 // React build serve
 if (process.env.NODE_ENV === "production") {
-  app.use(
-    e.static(path.join(__dirname, "../../frontend/dist"))
-  );
+  app.use(e.static(path.join(__dirname, "../../frontend/dist")));
 
   app.get("/{*rest}", (req, res) => {
-    res.sendFile(
-      path.join(__dirname, "../../frontend/dist/index.html")
-    );
+    res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`server running on port: ${PORT}`);
-  connectDB();
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port: ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Database connection failed:", error);
+  }
+};
+
+startServer();
